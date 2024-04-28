@@ -4,8 +4,8 @@ import prisma from "~/db.server";
  * Creates a PaymentSession entity with the provided data.
  */
 export const createPaymentSession = async (paymentSession) => {
-  const {amount, paymentMethod, customer, clientDetails} = paymentSession;
-  return await prisma.paymentSession.create({
+  const {amount, paymentMethod, customer, clientDetails, merchantLocale} = paymentSession;
+  /*return await prisma.paymentSession.create({
     data: {
       ...paymentSession,
       amount: parseFloat(amount),
@@ -13,7 +13,16 @@ export const createPaymentSession = async (paymentSession) => {
       customer: JSON.stringify(customer),
       clientDetails: JSON.stringify(clientDetails)
     }
-  });
+  });*/
+  return {
+    data: {
+      ...paymentSession,
+      amount: parseFloat(amount),
+      paymentMethod: JSON.stringify(paymentMethod),
+      customer: JSON.stringify(customer),
+      clientDetails: JSON.stringify(clientDetails)
+    }
+  }
 }
 
 /**
@@ -136,12 +145,20 @@ export const getConfiguration = async (sessionId) => {
 }
 
 /**
+ * Returns the configuration for the payment session.
+ */
+export const getCredentials = async (shop) => {
+  const configuration = await prisma.configuration.findFirst({ where: { shop }});
+  return configuration;
+}
+
+/**
  * Returns the configuration for the session if it exists, create it otherwise.
  */
 export const getOrCreateConfiguration = async (sessionId, config) => {
   const configuration = await prisma.configuration.upsert({
     where: { sessionId },
-    update: {},
+    update: { ...config },
     create: { sessionId, ...config },
   })
   return configuration;

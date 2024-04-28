@@ -1,7 +1,10 @@
 import crypto from 'crypto';
 import ecKeyUtils from 'eckey-utils';
 
-const PRIVATE_KEY = '<PRIVATE_KEY_PEM>';
+// Ruta al archivo .pem
+const private_key = "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIBrhmj2ZxpfPlEXZ6O0m49qz5pLrlZcpUmGzMsR6eWA+oAoGCCqGSM49\nAwEHoUQDQgAEIOMqyxoaPihbrhr3kf61ftKk6ypTvRSMTeMKrZ8deoy47ijKsXWI\nohjhrELTayzH+7oqnXankB9PBWgDr/b4DA==\n-----END EC PRIVATE KEY-----\n"
+const PRIVATE_KEY = private_key;
+
 
 const EC_CURVE = 'prime256v1';
 const CIPHER = 'aes-256-ctr';

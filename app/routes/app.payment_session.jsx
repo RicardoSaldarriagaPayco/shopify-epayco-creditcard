@@ -1,8 +1,10 @@
-import { createPaymentSession, getRejectReason } from "~/payments.repository";
+import { createPaymentSession, getRejectReason , getCredentials} from "~/payments.repository";
 import { sessionStorage } from "~/shopify.server";
 import PaymentsAppsClient, { PAYMENT } from "~/payments-apps.graphql";
 import { json } from "@remix-run/node";
 import decryptCreditCardPayload from "~/encryption";
+import { epaycoConfig, processEpaycoPaymentCreditCard } from "~/epaycoConfig";
+import PaymentsAppsEpayco from "~/payments-apps.epayco";
 
 /**
  * Saves and starts a payment session.
@@ -11,7 +13,7 @@ import decryptCreditCardPayload from "~/encryption";
 export const action = async ({ request }) => {
   const requestBody = await request.json();
 
-  const shopDomain = request.headers.get("shopify-shop-domain");
+  const shopDomain = request.headers.get("shopify-shop-domain") ?? request.headers.get("Shopify-shop-domain");
 
   const sessionPayload = createParams(requestBody, shopDomain);
   const paymentSession = await createPaymentSession(sessionPayload);
@@ -22,13 +24,14 @@ export const action = async ({ request }) => {
   // const creditCard = decryptCard(sessionPayload.paymentMethod.data);
 
   // Process the payment asyncronously
-  setTimeout((async () => { processPayment(paymentSession) }), 0);
+     setTimeout((async () => { processPayment(paymentSession) }), 0);
 
   // Return empty response, 201
   return json({}, { status: 201 });
+  
 }
 
-const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details}, shopDomain) => (
+const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
   {
     id,
     gid,
@@ -43,34 +46,33 @@ const createParams = ({id, gid, group, amount, currency, test, kind, customer, p
     cancelUrl: cancel_url,
     shop: shopDomain,
     clientDetails: client_details,
+    merchantLocale: merchant_locale,
   }
 )
 
 const processPayment = async (paymentSession) => {
   const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
+  const config = await getCredentials(session.shop);
+  const pCustId = config?.pCustId;
+  const publicKey = config?.publicKey;
+  const privateKey = config?.privateKey;
+  const test = paymentSession.data.test;
+  const lang = paymentSession.data.merchantLocale.substr(0, 2).toUpperCase();
   const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
+  const epayco = await epaycoConfig(publicKey,privateKey,lang,test);
+  //const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
+  //const token = await epayco.sessionToken();
+  //epayco.accessToken= `Bearer ${token}`;
+  //const status = await epayco.charge(session, paymentSession);
+  const status = await processEpaycoPaymentCreditCard(epayco, client, paymentSession);
 
-  const { billing_address: billingAddress, shipping_address: shippingAddress } = JSON.parse(paymentSession.customer);
-  const firstName = billingAddress.given_name || shippingAddress.given_name;
-  const lastName = (billingAddress.family_name || shippingAddress.family_name).toUpperCase();
-
-  // Last name can be used to simulate a rejection or a 3DS session (optionally frictionless)
-  if (firstName === "reject") {
-    await client.rejectSession(paymentSession, { reasonCode: getRejectReason(lastName) });
-  } else if (firstName === "pending") {
-    await client.pendSession(paymentSession);
-  } else if (firstName === "3ds") {
-    const redirectUrl = three_d_secure_redirect_url(paymentSession.id, lastName === "FRICTIONLESS");
-    await client.redirectSession(paymentSession, redirectUrl);
-  } else {
+  if (status === "Rechazada") {
+    await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+  } else if (status === "Aceptada") {
     await client.resolveSession(paymentSession);
+  } else {
+    await client.pendSession(paymentSession.data);
   }
-}
-
-const three_d_secure_redirect_url = (payment_session_id, is_frictionless) => {
-  const url = process.env.SHOPIFY_APP_URL;
-
-  return `${url}/app/three-d-secure/${payment_session_id}${is_frictionless ? "?frictionless=true" : ""}`
 }
 
 const decryptCard = ({encrypted_message, ephemeral_public_key, tag}) => {

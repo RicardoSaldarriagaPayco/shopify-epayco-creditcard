@@ -15,7 +15,10 @@ CREATE TABLE "Configuration" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "sessionId" TEXT NOT NULL,
     "shop" TEXT NOT NULL,
-    "accountName" TEXT NOT NULL,
+    "pCustId" TEXT NOT NULL,
+    "publicKey" TEXT NOT NULL,
+    "privateKey" TEXT NOT NULL,
+    "pKey" TEXT NOT NULL,
     "ready" BOOLEAN NOT NULL DEFAULT true,
     "apiVersion" TEXT NOT NULL DEFAULT 'unstable',
     CONSTRAINT "Configuration_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "Session" ("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -36,6 +39,7 @@ CREATE TABLE "PaymentSession" (
     "proposedAt" DATETIME NOT NULL,
     "status" TEXT,
     "clientDetails" TEXT,
+    "merchantLocale" TEXT,
     "threeDSecureAuthentication" TEXT
 );
 

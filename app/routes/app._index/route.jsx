@@ -26,8 +26,6 @@ import {
 import { authenticate } from "~/shopify.server";
 import { getConfiguration, getOrCreateConfiguration } from "~/payments.repository";
 import PaymentsAppsClient from "~/payments-apps.graphql";
-import Welcome from "./welcome";
-
 /**
  * Loads the app's configuration if it exists.
 */
@@ -49,14 +47,17 @@ export const action = async ({ request }) => {
   const formData = await request.formData();
   const config = {
     shop: session.shop,
-    accountName: formData.get("accountName"),
-    ready: formData.get("ready") === "true",
-    apiVersion: formData.get("apiVersion"),
+    pCustId: formData.get("pCustId"),
+    publicKey: formData.get("publicKey"),
+    privateKey: formData.get("privateKey"),
+    pKey: formData.get("pKey"),
+    ready: true,
+    apiVersion: '2024-07',
   };
   const configuration = await getOrCreateConfiguration(session.id, config);
 
   const client = new PaymentsAppsClient(session.shop, session.accessToken);
-  const response = await client.paymentsAppConfigure(configuration.accountName, configuration.ready);
+  const response = await client.paymentsAppConfigure('epayco-credit-card', true);
 
   const userErrors = response.userErrors || [];
 
@@ -69,9 +70,12 @@ export default function Index() {
   const { shopDomain, apiKey, config } = useLoaderData();
   const action = useActionData();
 
-  const [accountName, setAccountName] = useState(config ? config.accountName : '');
+  const [pCustId, setPCustId] = useState(config ? config.pCustId : '');
+  const [publicKey, setPublicKey] = useState(config ? config.publicKey : '');
+  const [privateKey, setPrivateKey] = useState(config ? config.privateKey : '');
+  const [pKey, setPKey] = useState(config ? config.pKey : '');
   const [ready, setReady] = useState(config ? config.ready : false);
-  const [apiVersion, setApiVersion] = useState(config ? config.ready : 'unstable');
+  const [apiVersion, setApiVersion] = useState(config ? config.apiVersion : 'unstable');
   const [showBanner, setShowBanner] = useState(action ? action.raiseBanner : false);
   const [errors, setErrors] = useState([]);
 
@@ -86,7 +90,7 @@ export default function Index() {
   const errorBanner = () => (
     errors.length > 0 && (
       <Banner
-        title={'😢 An error ocurred!'}
+        title={'An error ocurred!'}
         status="critical"
         onDismiss={() => { setErrors([]) }}
       >
@@ -102,7 +106,7 @@ export default function Index() {
   const banner = () => (
     showBanner && (
       <Banner
-        title={'🥰 Settings updated!'}
+        title={'Settings updated!'}
         action={{
           content: 'Return to Shopify',
           url: `https://${shopDomain}/services/payments_partners/gateways/${apiKey}/settings`,
@@ -112,17 +116,6 @@ export default function Index() {
       />)
     );
 
-  const apiVersionOptions = [
-    {value: 'unstable', label: 'unstable'},
-    {value: '2022-01', label: '2022-01'},
-    {value: '2022-04', label: '2022-04'},
-    {value: '2022-07', label: '2022-07'},
-    {value: '2022-09', label: '2022-09'},
-    {value: '2023-01', label: '2023-01'},
-    {value: '2023-04', label: '2023-04'},
-    {value: '2023-07', label: '2023-07'},
-    {value: '2023-09', label: '2023-09'},
-  ];
 
   if (isLoading) {
     return (
@@ -145,21 +138,22 @@ export default function Index() {
             </BlockStack>
           </Layout.Section>
           <Layout.Section>
-            <Welcome />
-          </Layout.Section>
-          <Layout.Section>
             <Card>
               <BlockStack gap="5">
                 <BlockStack gap="2">
                   <Text as="h2" variant="headingMd">
-                    Configure your Payments App
+                    ePayco
                   </Text>
                   <Text as="p">
-                    Below you'll find a form to configure your
-                    app with the current shop: <Text as="span" color="success">{shopDomain}</Text>
+                    Instructivo de implementación:
+                    <ol>
+                      <li>Crear una cuenta <a href="https://dashboard.epayco.com/register">ePayco</a></li>
+                      <li>Iniciar sesión en tu cuenta <a href="https://dashboard.epayco.com/login">ePayco</a></li>
+                      <li>Haz clic en el módulo "Integraciones" y en el submódulo de "Llaves API" se encontrarán las llaves secretas (credenciales de seguridad proporcionadas por ePayco)</li>
+                    </ol>
                   </Text>
                   <Text as="p">
-                    If any details are already present, your app has already been configured with the shop.
+                    Obtén ayuda de ePayco
                   </Text>
                 </BlockStack>
                 <BlockStack gap="2">
@@ -167,25 +161,32 @@ export default function Index() {
                     <Form method="post">
                       <FormLayout>
                         <TextField
-                          label="Account Name"
-                          name="accountName"
-                          onChange={(change) => setAccountName(change)}
-                          value={accountName}
+                          label="ID DE COMERCIO"
+                          name="pCustId"
+                          onChange={(change) => setPCustId(change)}
+                          value={pCustId}
                           autoComplete="off"
                         />
-                        <Checkbox
-                          label="Ready?"
-                          name="ready"
-                          checked={ready}
-                          onChange={(change) => setReady(change)}
-                          value={ready.toString()}
+                        <TextField
+                          label="PUBLIC KEY"
+                          name="publicKey"
+                          onChange={(change) => setPublicKey(change)}
+                          value={publicKey}
+                          autoComplete="off"
                         />
-                        <Select
-                          label="API Version"
-                          name="apiVersion"
-                          onChange={(change) => setApiVersion(change)}
-                          options={apiVersionOptions}
-                          value={apiVersion}
+                        <TextField
+                          label="PRIVATE KEY"
+                          name="privateKey"
+                          onChange={(change) => setPrivateKey(change)}
+                          value={privateKey}
+                          autoComplete="off"
+                        />
+                        <TextField
+                          label="P KEY"
+                          name="pKey"
+                          onChange={(change) => setPKey(change)}
+                          value={pKey}
+                          autoComplete="off"
                         />
                         <Button submit>Submit</Button>
                       </FormLayout>
@@ -198,9 +199,9 @@ export default function Index() {
         </Layout>
 
         <FooterHelp>
-          <Text as="span">Learn more about </Text>
-          <Link url="https://shopify.dev/docs/apps/payments" target="_blank">
-            payments apps
+          <Text as="span">aprende más sobre </Text>
+          <Link url="https://epayco.com/" target="_blank">
+            ePayco
           </Link>
         </FooterHelp>
       </BlockStack>

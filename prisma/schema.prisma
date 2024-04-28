@@ -26,8 +26,11 @@ model Configuration {
   id          Int     @id @default(autoincrement())
   session     Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId   String  @unique
-  shop        String
-  accountName String
+  shop        String  
+  pCustId     String
+  publicKey   String
+  privateKey  String
+  pKey        String
   ready       Boolean @default(true)
   apiVersion  String  @default("unstable")
 
@@ -51,6 +54,7 @@ model PaymentSession {
   proposedAt    DateTime
   status        String?
   clientDetails String?
+  merchantLocale String?
   threeDSecureAuthentication String?
 }
 
