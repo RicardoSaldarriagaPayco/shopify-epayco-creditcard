@@ -47,16 +47,17 @@ import {
   export const action = async ({ request, params: { paymentId } }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
-  
+    const status = data["x_response"];
     const paymentSession = await getPaymentSession(paymentId);
     const lastName = JSON.parse(paymentSession.customer).billing_address.family_name;
-    const isRejectLastName = rejectReasons.includes(lastName);
+    //const isRejectLastName = rejectReasons.includes(data["choice"]);
+    const isRejectLastName = (status !== 'Aceptada' || status !== 'Pendiente') ? true : false;
   
     const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
     const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
   
     const authenticationPayload = {};
-    if (data["choice"] === "authentication_data" && !isRejectLastName) {
+    if (!isRejectLastName) {
       Object.assign(authenticationPayload, {
         authenticationFlow: data["flow"],
         transStatus: data["transStatus"],
