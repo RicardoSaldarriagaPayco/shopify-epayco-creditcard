@@ -33,40 +33,60 @@ export default class PaymentsAppsEpayco {
 
     /**
      * Generic session resolution function
-     * @param {*} session the session to resolve upon
      * @param {*} paymentSession the paymentSession to resolve payment
      * @returns the response body from the ePayco API
      */
-    async charge(session, paymentSession) {
-        const { id, gid, kind } = session;
-        const { billing_address: billingAddress,
-            shipping_address: shippingAddress
-          } = paymentSession.customer;
-          const email = paymentSession.customer.email;
+    async charge(paymentSession) {
+          const { id, gid, kind } = paymentSession;
+          const { billing_address: billingAddress,
+            shipping_address: shippingAddress,
+            email
+          } = JSON.parse(paymentSession.customer);
           const name = billingAddress.given_name || shippingAddress.given_name;
-          const last_name = (billingAddress.family_name || shippingAddress.family_name).toUpperCase();
+          const lastName = (billingAddress.family_name || shippingAddress.family_name).toUpperCase();
           const country_code = billingAddress.country_code || shippingAddress.country_code;
           const city = billingAddress.city || shippingAddress.city;
           const address = billingAddress.line1 || shippingAddress.line1;
-          const phone = billingAddress.phone_number || shippingAddress.phone_number;
-          const bill = paymentSession.id;
-          const value = paymentSession.amount;
+          //const cellPhone = billingAddress.phone_number || shippingAddress.phone_number;
+          //const phone = billingAddress.phone_number || shippingAddress.phone_number;
+          const cellPhone = "0000000000";
+          const phone = "0000000000";
+          const invoice = paymentSession.id+new Date().getTime();
+          const value = paymentSession.amount.toString();
           const currency = paymentSession.currency;
+          const test = paymentSession.test;
+          const ip = await this.getIp();
+          const urlConfirmation = this.comfirm_url(paymentSession.id);
           const payload = { 
-            id,
             email,
             name,
-            last_name,
+            lastName,
             country_code,
             city,
             address,
+            cellPhone,
             phone,
-            bill,
+            invoice,
             value,
-            currency
+            currency,
+            docNumber:"0000000",
+            docType:"CC",
+            cardNumber: "5186000600001015",
+            cardExpYear: "2025",
+            cardExpMonth: "12",
+            cardCvc: "334",
+            dues: "1",
+            testMode: test,
+            urlConfirmation
         };
         const response = await this.#perform(payload, '/payment/process');
         return response;
+    }
+
+    async getIp() {
+      return await fetch('https://api.ipify.org/?format=json')
+        .then(res => res.json())
+        .then(data => data.ip);
     }
 
     /**
@@ -84,16 +104,20 @@ export default class PaymentsAppsEpayco {
         const response = await fetch(this.BASE_URL_APIFY+`/${path}`, {
           method: 'POST',
           headers,
-          body: JSON.stringify({
-            query
-          })
+          body: JSON.stringify(query)
         })
         console.log(`[apify] Making request for path: "${path}"`)
     
         const responseBody = await response.json();
         console.log(`[apify] response: ${JSON.stringify(responseBody)}`);
     
-        return response.ok ? responseBody.data : null
+        return response.ok ? responseBody : null
+      }
+
+      comfirm_url(payment_session_id) {
+        const url = process.env.SHOPIFY_APP_URL;
+      
+        return `${url}/app/confirm/${payment_session_id}`
       }
 
 }

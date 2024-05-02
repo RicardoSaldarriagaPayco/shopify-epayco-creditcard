@@ -5,7 +5,7 @@ import prisma from "~/db.server";
  */
 export const createPaymentSession = async (paymentSession) => {
   const {amount, paymentMethod, customer, clientDetails, merchantLocale} = paymentSession;
-  /*return await prisma.paymentSession.create({
+  return await prisma.paymentSession.create({
     data: {
       ...paymentSession,
       amount: parseFloat(amount),
@@ -13,16 +13,14 @@ export const createPaymentSession = async (paymentSession) => {
       customer: JSON.stringify(customer),
       clientDetails: JSON.stringify(clientDetails)
     }
-  });*/
-  return {
-    data: {
+  });
+  /*return {
       ...paymentSession,
       amount: parseFloat(amount),
       paymentMethod: JSON.stringify(paymentMethod),
       customer: JSON.stringify(customer),
       clientDetails: JSON.stringify(clientDetails)
-    }
-  }
+  }*/
 }
 
 /**

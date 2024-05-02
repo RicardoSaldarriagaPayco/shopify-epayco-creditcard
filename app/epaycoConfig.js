@@ -38,6 +38,7 @@ const makeTransaction = async (epayco, paymentSession) => {
   const value = paymentSession.data.amount;
   const currency = paymentSession.data.currency;
   const ip = await getIp();
+  const confirmUrl = comfirm_url(paymentSession.data.id);
   var credit_info = {
     "card[number]": "4575623182290326",
     "card[exp_year]": "2025",
@@ -70,7 +71,7 @@ const makeTransaction = async (epayco, paymentSession) => {
                   token_card,
                   customer_id,
                   doc_type: "CC",
-                  doc_number: "10358519",
+                  doc_number: "0000000",
                   name,
                   last_name,
                   email,
@@ -86,8 +87,8 @@ const makeTransaction = async (epayco, paymentSession) => {
                   currency,
                   dues: "1",
                   ip,
-                  url_response: "https://ejemplo.com/respuesta.html",
-                  url_confirmation: "https://ejemplo.com/confirmacion",
+                  url_response: confirmUrl,
+                  url_confirmation: confirmUrl,
                   method_confirmation: "GET",
                   use_default_card_customer: true,
               }
@@ -114,6 +115,12 @@ const makeTransaction = async (epayco, paymentSession) => {
     .catch(function(err) {
         console.log("err: " + err);
     });
+}
+
+const comfirm_url = (payment_session_id) => {
+  const url = process.env.SHOPIFY_APP_URL;
+
+  return `${url}/app/confirm/${payment_session_id}`
 }
 
   /**

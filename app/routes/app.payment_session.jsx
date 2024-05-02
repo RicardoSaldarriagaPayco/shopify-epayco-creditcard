@@ -56,22 +56,26 @@ const processPayment = async (paymentSession) => {
   const pCustId = config?.pCustId;
   const publicKey = config?.publicKey;
   const privateKey = config?.privateKey;
-  const test = paymentSession.data.test;
-  const lang = paymentSession.data.merchantLocale.substr(0, 2).toUpperCase();
+  const test = paymentSession.test;
+  const lang = paymentSession.merchantLocale.substr(0, 2).toUpperCase();
   const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
-  const epayco = await epaycoConfig(publicKey,privateKey,lang,test);
-  //const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
-  //const token = await epayco.sessionToken();
-  //epayco.accessToken= `Bearer ${token}`;
-  //const status = await epayco.charge(session, paymentSession);
-  const status = await processEpaycoPaymentCreditCard(epayco, client, paymentSession);
+  //const epayco = await epaycoConfig(publicKey,privateKey,lang,test);
+  const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
+  const {token} = await epayco.sessionToken();
+  epayco.accessToken= `Bearer ${token}`;
+  const {success, data} = await epayco.charge(paymentSession);
+  if(!success){
+      return;
+  }
+  const {estado} = data.transaction.data;
+  //const estado = await processEpaycoPaymentCreditCard(epayco, client, paymentSession);
 
-  if (status === "Rechazada") {
+  if (estado === "Rechazada") {
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
-  } else if (status === "Aceptada") {
+  } else if (estado === "Aceptada") {
     await client.resolveSession(paymentSession);
   } else {
-    await client.pendSession(paymentSession.data);
+    await client.pendSession(paymentSession);
   }
 }
 
