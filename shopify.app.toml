@@ -3,7 +3,7 @@
 client_id = "c701d59ba2163f792fa2c08a31346f99"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "https://burke-brilliant-salmon-pink.trycloudflare.com"
+application_url = "https://rates-refers-synopsis-begun.trycloudflare.com"
 embedded = false
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "https://burke-brilliant-salmon-pink.trycloudflare.com/auth/callback",
-  "https://burke-brilliant-salmon-pink.trycloudflare.com/auth/shopify/callback",
-  "https://burke-brilliant-salmon-pink.trycloudflare.com/api/auth/callback"
+  "https://rates-refers-synopsis-begun.trycloudflare.com/auth/callback",
+  "https://rates-refers-synopsis-begun.trycloudflare.com/auth/shopify/callback",
+  "https://rates-refers-synopsis-begun.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
