@@ -3,7 +3,7 @@
 client_id = "c701d59ba2163f792fa2c08a31346f99"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "https://rates-refers-synopsis-begun.trycloudflare.com"
+application_url = "https://special-interval-attached-report.trycloudflare.com"
 embedded = false
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "https://rates-refers-synopsis-begun.trycloudflare.com/auth/callback",
-  "https://rates-refers-synopsis-begun.trycloudflare.com/auth/shopify/callback",
-  "https://rates-refers-synopsis-begun.trycloudflare.com/api/auth/callback"
+  "https://special-interval-attached-report.trycloudflare.com/auth/callback",
+  "https://special-interval-attached-report.trycloudflare.com/auth/shopify/callback",
+  "https://special-interval-attached-report.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

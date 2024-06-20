@@ -36,12 +36,16 @@ export default class PaymentsAppsEpayco {
      * @param {*} paymentSession the paymentSession to resolve payment
      * @returns the response body from the ePayco API
      */
-    async charge(paymentSession) {
+    async charge(paymentSession,creditCard) {
           const { id, gid, kind } = paymentSession;
           const { billing_address: billingAddress,
             shipping_address: shippingAddress,
             email
           } = JSON.parse(paymentSession.customer);
+          const cardNumber = creditCard.data.pan;
+          const cardExpYear = creditCard.data.year;
+          const cardExpMonth = creditCard.data.month;
+          const cardCvc = creditCard.data.verification_value;
           const name = billingAddress.given_name || shippingAddress.given_name;
           const lastName = (billingAddress.family_name || shippingAddress.family_name).toUpperCase();
           const country_code = billingAddress.country_code || shippingAddress.country_code;
@@ -71,10 +75,10 @@ export default class PaymentsAppsEpayco {
             currency,
             docNumber:"0000000",
             docType:"CC",
-            cardNumber: "5186000600001015",
-            cardExpYear: "2025",
-            cardExpMonth: "12",
-            cardCvc: "334",
+            cardNumber,
+            cardExpYear,
+            cardExpMonth,
+            cardCvc,
             dues: "1",
             testMode: test,
             urlConfirmation

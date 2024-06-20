@@ -21,10 +21,10 @@ export const action = async ({ request }) => {
   if (!paymentSession) throw new Response("A PaymentSession couldn't be created.", { status: 500 });
 
   // Once the private key is set in encryption.js, this can be used for processing.
-  // const creditCard = decryptCard(sessionPayload.paymentMethod.data);
+  const creditCard = decryptCard(sessionPayload.paymentMethod.data);
 
   // Process the payment asyncronously
-     setTimeout((async () => { processPayment(paymentSession) }), 0);
+  setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
 
   // Return empty response, 201
   return json({}, { status: 201 });
@@ -50,7 +50,7 @@ const createParams = ({id, gid, group, amount, currency, test, kind, customer, p
   }
 )
 
-const processPayment = async (paymentSession) => {
+const processPayment = async (paymentSession,creditCard) => {
   const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
   const config = await getCredentials(session.shop);
   const pCustId = config?.pCustId;
@@ -63,7 +63,7 @@ const processPayment = async (paymentSession) => {
   const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
   const {token} = await epayco.sessionToken();
   epayco.accessToken= `Bearer ${token}`;
-  const {success, data} = await epayco.charge(paymentSession);
+  const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
       return;
   }
