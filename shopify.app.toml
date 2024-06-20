@@ -3,7 +3,7 @@
 client_id = "c701d59ba2163f792fa2c08a31346f99"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "https://special-interval-attached-report.trycloudflare.com"
+application_url = "https://plugins.epayco.io/develop/shopify-epayco-creditcard"
 embedded = false
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "https://special-interval-attached-report.trycloudflare.com/auth/callback",
-  "https://special-interval-attached-report.trycloudflare.com/auth/shopify/callback",
-  "https://special-interval-attached-report.trycloudflare.com/api/auth/callback"
+  "https://plugins.epayco.io/develop/shopify-epayco-creditcard/auth/callback",
+  "https://plugins.epayco.io/develop/shopify-epayco-creditcard/auth/shopify/callback",
+  "https://plugins.epayco.io/develop/shopify-epayco-creditcard/api/auth/callback"
 ]
 
 [webhooks]
