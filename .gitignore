@@ -1,5 +1,5 @@
 node_modules
-
+/.vscode
 /.cache
 /build
 /app/build
@@ -10,6 +10,5 @@ node_modules
 /prisma/dev.sqlite-journal
 database.sqlite
 
-.env
 package-lock.json
 yarn.lock
