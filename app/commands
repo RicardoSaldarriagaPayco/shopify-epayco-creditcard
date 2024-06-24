@@ -1,0 +1,2 @@
+docker build -t shopify-epayco-creditcard .
+docker run -it -p 3000:3000 shopify-epayco-creditcard
