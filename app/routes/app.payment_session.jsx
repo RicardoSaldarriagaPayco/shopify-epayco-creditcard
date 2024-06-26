@@ -3,7 +3,6 @@ import { sessionStorage } from "~/shopify.server";
 import PaymentsAppsClient, { PAYMENT } from "~/payments-apps.graphql";
 import { json } from "@remix-run/node";
 import decryptCreditCardPayload from "~/encryption";
-import { epaycoConfig, processEpaycoPaymentCreditCard } from "~/epaycoConfig";
 import PaymentsAppsEpayco from "~/payments-apps.epayco";
 
 /**
@@ -59,17 +58,14 @@ const processPayment = async (paymentSession,creditCard) => {
   const test = paymentSession.test;
   const lang = paymentSession.merchantLocale.substr(0, 2).toUpperCase();
   const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
-  //const epayco = await epaycoConfig(publicKey,privateKey,lang,test);
   const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
   const {token} = await epayco.sessionToken();
   epayco.accessToken= `Bearer ${token}`;
   const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
-      return;
+      return json({}, { status: 404 });
   }
   const {estado} = data.transaction.data;
-  //const estado = await processEpaycoPaymentCreditCard(epayco, client, paymentSession);
-
   if (estado === "Rechazada") {
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
   } else if (estado === "Aceptada") {

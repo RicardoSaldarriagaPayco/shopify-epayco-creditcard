@@ -1,0 +1,40 @@
+api_version = "2024-07"
+
+[[extensions]]
+name = "credit-card"
+type = "payments_extension"
+handle = "credit-card"
+payment_session_url = "https://plugins.epayco.io/testing/prueba/index.php"
+refund_session_url = "https://plugins.epayco.io/testing/prueba/index.php"
+capture_session_url = "https://plugins.epayco.io/testing/prueba/index.php"
+void_session_url = "https://plugins.epayco.io/testing/prueba/index.php"
+confirmation_callback_url = "https://plugins.epayco.io/testing/prueba/index.php"
+multiple_capture = false
+merchant_label = "ePayco Credit Card"
+supported_countries = [
+  "AR",
+  "BO",
+  "BR",
+  "BQ",
+  "CL",
+  "CO",
+  "EC",
+  "FK",
+  "GF",
+  "GY",
+  "PY",
+  "PE",
+  "GS",
+  "SR",
+  "UY",
+  "VE"
+]
+supported_payment_methods = [ "visa" ]
+test_mode_available = true
+supports_3ds = false
+supports_deferred_payments = false
+supports_installments = false
+encryption_certificate_fingerprint = "deef4702f2066155cae0e5a9fc5a0218c8b7b9dd65a30f0993e7192cb06db748"
+
+  [[extensions.targeting]]
+  target = "payments.credit-card.render"

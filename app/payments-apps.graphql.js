@@ -42,11 +42,8 @@ export default class PaymentsAppsClient {
    * @returns the response body from the Shopify Payments Apps API
    */
   async resolveSession(session) {
-    const { id, gid, kind } = session.data;
+    const { id, gid, kind } = session;
     const payload = { id: gid };
-    if (session.threeDSecureAuthentication) payload['authentication'] = { authenticationData: JSON.parse(session.threeDSecureAuthentication) }
-
-    if (this.type === PAYMENT && kind === 'authorization') payload['authorizationExpiresAt'] = this.tomorrow.toISOString();
 
     const response = await this.#perform(schema[this.resolveMutation], payload);
     const responseData = response[this.resolveMutation]
@@ -61,7 +58,7 @@ export default class PaymentsAppsClient {
    * @returns the response body from the Shopify Payments Apps API
    */
   async rejectSession(session, { reasonCode = "PROCESSING_ERROR" } = {}) {
-    const { id, gid } = session.data;
+    const { id, gid } = session;
     const payload = {
       id: gid,
       reason: {
@@ -73,7 +70,7 @@ export default class PaymentsAppsClient {
 
     const response = await this.#perform(schema[this.rejectMutation], payload)
     const responseData = response[this.rejectMutation]
-    //if (responseData?.userErrors?.length === 0) await this.update?.(id, REJECT);
+    if (responseData?.userErrors?.length === 0) await this.update?.(id, REJECT);
 
     return responseData;
   }
@@ -92,7 +89,7 @@ export default class PaymentsAppsClient {
       reason: "PARTNER_ACTION_REQUIRED"
     });
     const responseData = response[this.pendingMutation];
-    //if (responseData?.userErrors?.length === 0) await this.update?.(id, PENDING);
+    if (responseData?.userErrors?.length === 0) await this.update?.(id, PENDING);
 
     return responseData;
   }
@@ -109,7 +106,7 @@ export default class PaymentsAppsClient {
       redirectUrl: redirectUrl
     });
     const responseData = response[this.redirectMutation]
-    //if (responseData?.userErrors?.length === 0) await this.update?.(id, RESOLVE);
+    if (responseData?.userErrors?.length === 0) await this.update?.(id, RESOLVE);
 
     return responseData;
   }
@@ -123,7 +120,7 @@ export default class PaymentsAppsClient {
     const response = await this.#perform(schema[this.confirmMutation], { id: gid });
     const responseData = response[this.confirmMutation];
 
-    //if (responseData?.userErrors?.length === 0) await this.update?.(id, RESOLVE);
+    if (responseData?.userErrors?.length === 0) await this.update?.(id, RESOLVE);
 
     return responseData;
   }

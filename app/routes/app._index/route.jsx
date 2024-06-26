@@ -106,9 +106,9 @@ export default function Index() {
   const banner = () => (
     showBanner && (
       <Banner
-        title={'Settings updated!'}
+        title={'Cambios realizados!'}
         action={{
-          content: 'Return to Shopify',
+          content: 'Volver a Shopify',
           url: `https://${shopDomain}/services/payments_partners/gateways/${apiKey}/settings`,
         }}
         status="success"
@@ -188,7 +188,7 @@ export default function Index() {
                           value={pKey}
                           autoComplete="off"
                         />
-                        <Button submit>Submit</Button>
+                        <Button submit>Guardar</Button>
                       </FormLayout>
                     </Form>
                   </Card>

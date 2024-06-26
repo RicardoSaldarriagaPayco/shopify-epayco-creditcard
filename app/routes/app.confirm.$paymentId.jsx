@@ -22,7 +22,7 @@ import {
   import { json, redirect } from "@remix-run/node";
   
   import { sessionStorage } from "../shopify.server";
-  import { getPaymentSession, updatePaymentSessionAuthData, rejectReasons } from "~/payments.repository";
+  import { getPaymentSession, updatePaymentSessionAuthData, rejectReasons, getRejectReason } from "~/payments.repository";
   import PaymentsAppsClient, { PAYMENT } from "~/payments-apps.graphql";
   import ThreeDSecure from "~/three-d-s.constants";
   /**
@@ -30,51 +30,40 @@ import {
    */
   export const loader = async ({request, params: { paymentId } }) => {
     const paymentSession = await getPaymentSession(paymentId);
-  
-    const url = new URL(request.url);
-    const lastName = JSON.parse(paymentSession.customer).billing_address.family_name;
-    const isRejectLastName = rejectReasons.includes(lastName);
-  
-    const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
-    const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
-  
+
     return json({ paymentSession });
   }
   
-  /**
-   * Completes a 3DS session based on the simulator's form
-   */
+ 
   export const action = async ({ request, params: { paymentId } }) => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
     const status = data["x_response"];
     const paymentSession = await getPaymentSession(paymentId);
-    const lastName = JSON.parse(paymentSession.customer).billing_address.family_name;
-    //const isRejectLastName = rejectReasons.includes(data["choice"]);
-    const isRejectLastName = (status !== 'Aceptada' || status !== 'Pendiente') ? true : false;
+    const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
   
     const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
     const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
   
     const authenticationPayload = {};
-    if (!isRejectLastName) {
-      Object.assign(authenticationPayload, {
-        authenticationFlow: data["flow"],
-        transStatus: data["transStatus"],
-        version: data["version"],
-        chargebackLiability: data["chargebackLiability"]
-      });
-    } else {
+    if (isReject) {
       authenticationPayload['partnerError'] = "PROCESSING_ERROR";
     }
   
     const newPaymentSession = await updatePaymentSessionAuthData(paymentId, authenticationPayload);
-    const response = await client.confirmSession(newPaymentSession);
-  
+    /*const response = await client.confirmSession(newPaymentSession);
     const userErrors = response.userErrors;
     if (userErrors?.length > 0) return json({ errors: userErrors });
   
-    return redirect(response.paymentSession.nextAction.context.redirectUrl);
+    return redirect(response.paymentSession.nextAction.context.redirectUrl);*/
+    if (status === "Rechazada") {
+      await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+    } else if (status === "Aceptada") {
+      await client.resolveSession(paymentSession);
+    } else {
+      await client.pendSession(paymentSession);
+    }
+    return 'ok';
   }
   
  

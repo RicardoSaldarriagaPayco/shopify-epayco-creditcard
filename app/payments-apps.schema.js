@@ -14,20 +14,24 @@ const paymentsAppConfigure = `
 
 const paymentSessionResolve = `
   mutation PaymentSessionResolve(
-    $id: ID!,
-    $authorizationExpiresAt: DateTime,
-    $authentication: PaymentSessionThreeDSecureAuthentication
+    $id: ID!
   ) {
     paymentSessionResolve(
-      id: $id,
-      authorizationExpiresAt: $authorizationExpiresAt,
-      authentication: $authentication
+      id: $id
     ) {
       paymentSession {
         id
         state {
           ... on PaymentSessionStateResolved {
             code
+          }
+        }
+        nextAction {
+          action
+          context {
+            ... on PaymentSessionActionsRedirect {
+              redirectUrl
+            }
           }
         }
       }

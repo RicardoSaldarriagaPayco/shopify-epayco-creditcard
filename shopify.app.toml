@@ -3,7 +3,7 @@
 client_id = "c701d59ba2163f792fa2c08a31346f99"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "http://localhost:3000"
+application_url = "https://well-moscow-developments-herb.trycloudflare.com"
 embedded = false
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "http://localhost:3000/auth/callback",
-  "http://localhost:3000/auth/shopify/callback",
-  "http://localhost:3000/api/auth/callback"
+  "https://well-moscow-developments-herb.trycloudflare.com/auth/callback",
+  "https://well-moscow-developments-herb.trycloudflare.com/auth/shopify/callback",
+  "https://well-moscow-developments-herb.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

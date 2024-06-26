@@ -42,10 +42,10 @@ export default class PaymentsAppsEpayco {
             shipping_address: shippingAddress,
             email
           } = JSON.parse(paymentSession.customer);
-          const cardNumber = creditCard.data.pan;
-          const cardExpYear = creditCard.data.year;
-          const cardExpMonth = creditCard.data.month;
-          const cardCvc = creditCard.data.verification_value;
+          const cardNumber = creditCard.data.pan.toString();
+          const cardExpYear = creditCard.data.year.toString();
+          const cardExpMonth = creditCard.data.month.toString();
+          const cardCvc = creditCard.data.verification_value.toString();
           const name = billingAddress.given_name || shippingAddress.given_name;
           const lastName = (billingAddress.family_name || shippingAddress.family_name).toUpperCase();
           const country_code = billingAddress.country_code || shippingAddress.country_code;

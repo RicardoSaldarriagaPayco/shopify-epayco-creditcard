@@ -14,13 +14,6 @@ export const createPaymentSession = async (paymentSession) => {
       clientDetails: JSON.stringify(clientDetails)
     }
   });
-  /*return {
-      ...paymentSession,
-      amount: parseFloat(amount),
-      paymentMethod: JSON.stringify(paymentMethod),
-      customer: JSON.stringify(customer),
-      clientDetails: JSON.stringify(clientDetails)
-  }*/
 }
 
 /**
