@@ -29,12 +29,23 @@ supported_countries = [
   "UY",
   "VE"
 ]
-supported_payment_methods = [ "visa" ]
+supported_payment_methods = [
+  "visa",
+  "master",
+  "american_express",
+  "diners_club" 
+]
 test_mode_available = true
 supports_3ds = false
 supports_deferred_payments = false
 supports_installments = false
 encryption_certificate_fingerprint = "deef4702f2066155cae0e5a9fc5a0218c8b7b9dd65a30f0993e7192cb06db748"
+
+
+  [[extensions.checkout_payment_method_fields]]
+  key = "field1"
+  type = "string"
+  required = true
 
   [[extensions.targeting]]
   target = "payments.credit-card.render"

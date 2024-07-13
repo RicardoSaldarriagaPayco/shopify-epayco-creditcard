@@ -3,7 +3,7 @@
 client_id = "c701d59ba2163f792fa2c08a31346f99"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com"
+application_url = "https://cleared-toolbox-law-connections.trycloudflare.com"
 embedded = false
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/auth/callback",
-  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/auth/shopify/callback",
-  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/api/auth/callback"
+  "https://cleared-toolbox-law-connections.trycloudflare.com/auth/callback",
+  "https://cleared-toolbox-law-connections.trycloudflare.com/auth/shopify/callback",
+  "https://cleared-toolbox-law-connections.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
