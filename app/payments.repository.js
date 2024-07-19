@@ -5,7 +5,7 @@ import prisma from "~/db.server";
  */
 export const createPaymentSession = async (paymentSession) => {
   const {amount, paymentMethod, customer, clientDetails, merchantLocale} = paymentSession;
-  return await prisma.paymentSession.create({
+  return await prisma.shopify_tdc_paymentsession.create({
     data: {
       ...paymentSession,
       amount: parseFloat(amount),
@@ -21,7 +21,7 @@ export const createPaymentSession = async (paymentSession) => {
  */
 export const updatePaymentSessionStatus = async (id, status) => {
   if (!validateStatus(status)) return;
-  return await prisma.paymentSession.update({
+  return await prisma.shopify_tdc_paymentsession.update({
     where: { id },
     data: { status: status }
   })
@@ -33,7 +33,7 @@ export const updatePaymentSessionStatus = async (id, status) => {
  * @returns 
  */
 export const updatePaymentSessionAuthData = async (id, authenticationData) => {
-  return await prisma.paymentSession.update({
+  return await prisma.shopify_tdc_paymentsession.update({
     where: { id },
     data: { threeDSecureAuthentication: JSON.stringify(authenticationData) }
   })
@@ -44,7 +44,7 @@ export const updatePaymentSessionAuthData = async (id, authenticationData) => {
  * Returns the PaymentSession entity with the provided paymentId.
  */
 export const getPaymentSession = async (id) => {
-  return await prisma.paymentSession.findUniqueOrThrow({
+  return await prisma.shopify_tdc_paymentsession.findUniqueOrThrow({
     where: { id },
     include: { refunds: true, captures: true, void: true }
   })
@@ -54,7 +54,7 @@ export const getPaymentSession = async (id) => {
  * Fetches the 25 latest payment sessions along with their relations.
  */
 export const getPaymentSessions = async () => {
-  return await prisma.paymentSession.findMany({
+  return await prisma.shopify_tdc_paymentsession.findMany({
     take: 25,
     include: { refunds: true, captures: true, void: true },
     orderBy: { proposedAt: 'desc' }
@@ -66,7 +66,7 @@ export const getPaymentSessions = async () => {
  */
 export const createRefundSession = async (refundSession) => {
   const {amount} = refundSession;
-  return await prisma.refundSession.create({
+  return await prisma.shopify_tdc_refundsession.create({
     data: {
       ...refundSession,
       amount: parseFloat(amount)
@@ -79,7 +79,7 @@ export const createRefundSession = async (refundSession) => {
  */
 export const updateRefundSessionStatus = async (id, status) => {
   if (!validateStatus(status)) return;
-  return await prisma.refundSession.update({
+  return await prisma.shopify_tdc_refundsession.update({
     where: { id },
     data: { status: status }
   })
@@ -90,7 +90,7 @@ export const updateRefundSessionStatus = async (id, status) => {
  */
 export const createCaptureSession = async (captureSession) => {
   const {amount} = captureSession;
-  return await prisma.captureSession.create({
+  return await prisma.shopify_tdc_capturesession.create({
     data: {
       ...captureSession,
       amount: parseFloat(amount)
@@ -103,7 +103,7 @@ export const createCaptureSession = async (captureSession) => {
  */
 export const updateCaptureSessionStatus = async (id, status) => {
   if (!validateStatus(status)) return;
-  return await prisma.captureSession.update({
+  return await prisma.shopify_tdc_capturesession.update({
     where: { id },
     data: { status: status }
   })
@@ -113,7 +113,7 @@ export const updateCaptureSessionStatus = async (id, status) => {
  * Creates a VoidSession entity with the provided data.
  */
 export const createVoidSession = async (voidSession) => {
-  return await prisma.voidSession.create({ data: voidSession });
+  return await prisma.shopify_tdc_voidsession.create({ data: voidSession });
 }
 
 /**
@@ -121,7 +121,7 @@ export const createVoidSession = async (voidSession) => {
  */
 export const updateVoidSessionStatus = async (id, status) => {
   if (!validateStatus(status)) return;
-  return await prisma.voidSession.update({
+  return await prisma.shopify_tdc_voidsession.update({
     where: { id },
     data: { status: status }
   })
@@ -131,7 +131,7 @@ export const updateVoidSessionStatus = async (id, status) => {
  * Returns the configuration for the provided session.
  */
 export const getConfiguration = async (sessionId) => {
-  const configuration = await prisma.configuration.findUnique({ where: { sessionId }});
+  const configuration = await prisma.shopify_tdc_configurationshopify.findUnique({ where: { sessionId }});
   return configuration;
 }
 
@@ -139,7 +139,7 @@ export const getConfiguration = async (sessionId) => {
  * Returns the configuration for the payment session.
  */
 export const getCredentials = async (shop) => {
-  const configuration = await prisma.configuration.findFirst({ where: { shop }});
+  const configuration = await prisma.shopify_tdc_configurationshopify.findFirst({ where: { shop }});
   return configuration;
 }
 
@@ -147,7 +147,7 @@ export const getCredentials = async (shop) => {
  * Returns the configuration for the session if it exists, create it otherwise.
  */
 export const getOrCreateConfiguration = async (sessionId, config) => {
-  const configuration = await prisma.configuration.upsert({
+  const configuration = await prisma.shopify_tdc_configurationshopify.upsert({
     where: { sessionId },
     update: { ...config },
     create: { sessionId, ...config },
