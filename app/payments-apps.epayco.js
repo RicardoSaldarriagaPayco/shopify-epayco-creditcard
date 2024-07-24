@@ -51,11 +51,9 @@ export default class PaymentsAppsEpayco {
           const country_code = billingAddress.country_code || shippingAddress.country_code;
           const city = billingAddress.city || shippingAddress.city;
           const address = billingAddress.line1 || shippingAddress.line1;
-          //const cellPhone = billingAddress.phone_number || shippingAddress.phone_number;
-          //const phone = billingAddress.phone_number || shippingAddress.phone_number;
-          const cellPhone = "0000000000";
-          const phone = "0000000000";
-          const invoice = paymentSession.id+new Date().getTime();
+          const cellPhone = (billingAddress.phone_number || shippingAddress.phone_number)??"0000000000";
+          const phone = (billingAddress.phone_number || shippingAddress.phone_number)??"0000000000";
+          const invoice = paymentSession.id;
           const value = paymentSession.amount.toString();
           const currency = paymentSession.currency;
           const test = paymentSession.test;

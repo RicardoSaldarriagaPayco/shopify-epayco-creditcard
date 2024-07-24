@@ -4,16 +4,29 @@ import prisma from "~/db.server";
  * Creates a PaymentSession entity with the provided data.
  */
 export const createPaymentSession = async (paymentSession) => {
-  const {amount, paymentMethod, customer, clientDetails, merchantLocale} = paymentSession;
-  return await prisma.shopify_tdc_paymentsession.create({
-    data: {
+  const {id, amount, paymentMethod, customer, clientDetails, merchantLocale} = paymentSession;
+  var sessionPayment = await prisma.shopify_tdc_paymentsession.findUnique({
+    where: { id }
+  })
+  if(sessionPayment){
+    return {
       ...paymentSession,
-      amount: parseFloat(amount),
-      paymentMethod: JSON.stringify(paymentMethod),
-      customer: JSON.stringify(customer),
-      clientDetails: JSON.stringify(clientDetails)
-    }
-  });
+        amount: parseFloat(paymentSession.amount),
+        paymentMethod: JSON.stringify(paymentSession.paymentMethod),
+        customer: JSON.stringify(paymentSession.customer),
+        clientDetails: JSON.stringify(paymentSession.clientDetails)
+    };
+  }else{
+    return await prisma.shopify_tdc_paymentsession.create({
+      data: {
+        ...paymentSession,
+        amount: parseFloat(amount),
+        paymentMethod: JSON.stringify(paymentMethod),
+        customer: JSON.stringify(customer),
+        clientDetails: JSON.stringify(clientDetails)
+      }
+    });
+  }
 }
 
 /**
