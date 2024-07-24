@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,85 +10,77 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model session {
-  id                               String                            @id
-  shop                             String
-  state                            String
-  isOnline                         Boolean                           @default(false)
-  scope                            String?
-  expires                          DateTime?
-  accessToken                      String
-  userId                           BigInt?
-  shopify_tdc_configurationshopify shopify_tdc_configurationshopify?
+model Session {
+  id            String          @id
+  shop          String
+  state         String
+  isOnline      Boolean         @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  Configuration Configuration?
 }
 
-model shopify_tdc_capturesession {
-  id                         String                     @id
-  gid                        String
-  paymentId                  String
-  amount                     Decimal
-  currency                   String
-  proposedAt                 DateTime
-  status                     String?
-  shopify_tdc_paymentsession shopify_tdc_paymentsession @relation(fields: [paymentId], references: [id], map: "CaptureSessionShopify_paymentId_fkey")
+model Configuration {
+  id          Int     @id @default(autoincrement())
+  session     Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId   String  @unique
+  shop        String
+  accountName String
+  ready       Boolean @default(true)
+  apiVersion  String  @default("unstable")
 
-  @@index([paymentId], map: "CaptureSessionShopify_paymentId_fkey")
+  @@index([sessionId])
 }
 
-model shopify_tdc_configurationshopify {
-  id         Int     @id @default(autoincrement())
-  sessionId  String  @unique(map: "ConfigurationShopify_sessionId_key")
-  shop       String
-  pCustId    String
-  publicKey  String
-  privateKey String
-  pKey       String
-  ready      Boolean @default(true)
-  apiVersion String  @default("unstable")
-  session    session @relation(fields: [sessionId], references: [id], onDelete: Cascade, map: "ConfigurationShopify_sessionId_fkey")
-
-  @@index([sessionId], map: "ConfigurationShopify_sessionId_idx")
-}
-
-model shopify_tdc_paymentsession {
-  id                         String                       @id
-  gid                        String
-  group                      String
-  amount                     Decimal
-  test                       Boolean
-  currency                   String
-  kind                       String
-  shop                       String
-  paymentMethod              String
-  customer                   String
-  proposedAt                 DateTime
-  status                     String?
-  clientDetails              String?
-  merchantLocale             String?
+model PaymentSession {
+  id            String          @id
+  gid           String
+  group         String
+  amount        Decimal
+  test          Boolean
+  currency      String
+  kind          String
+  shop          String
+  paymentMethod String
+  customer      String
+  refunds       RefundSession[]
+  captures      CaptureSession[]
+  void          VoidSession?
+  proposedAt    DateTime
+  status        String?
+  clientDetails String?
   threeDSecureAuthentication String?
-  shopify_tdc_capturesession shopify_tdc_capturesession[]
-  shopify_tdc_refundsession  shopify_tdc_refundsession[]
-  shopify_tdc_voidsession    shopify_tdc_voidsession?
 }
 
-model shopify_tdc_refundsession {
-  id                         String                     @id
-  gid                        String
-  paymentId                  String
-  amount                     Decimal
-  currency                   String
-  proposedAt                 DateTime
-  status                     String?
-  shopify_tdc_paymentsession shopify_tdc_paymentsession @relation(fields: [paymentId], references: [id], map: "RefundSessionShopify_paymentId_fkey")
-
-  @@index([paymentId], map: "RefundSessionShopify_paymentId_fkey")
+model RefundSession {
+  id         String         @id
+  gid        String
+  payment    PaymentSession @relation(fields: [paymentId], references: [id])
+  paymentId  String
+  amount     Decimal
+  currency   String
+  proposedAt DateTime
+  status     String?
 }
 
-model shopify_tdc_voidsession {
-  id                         String                     @id
-  gid                        String
-  paymentId                  String                     @unique(map: "VoidSessionShopify_paymentId_key")
-  proposedAt                 DateTime
-  status                     String?
-  shopify_tdc_paymentsession shopify_tdc_paymentsession @relation(fields: [paymentId], references: [id], map: "VoidSessionShopify_paymentId_fkey")
+model CaptureSession {
+  id         String          @id
+  gid        String
+  payment    PaymentSession  @relation(fields: [paymentId], references: [id])
+  paymentId  String
+  amount     Decimal
+  currency   String
+  proposedAt DateTime
+  status     String?
+}
+
+model VoidSession {
+  id         String          @id
+  gid        String
+  payment    PaymentSession  @relation(fields: [paymentId], references: [id])
+  paymentId  String          @unique
+  proposedAt DateTime
+  status     String?
 }

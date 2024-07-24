@@ -5,7 +5,7 @@ EXPOSE 3000
 WORKDIR /app
 COPY . .
 
-#ENV NODE_ENV=dev
+ENV NODE_ENV=production
 
 RUN npm install --omit=dev
 #RUN npm install
@@ -17,4 +17,4 @@ RUN npm run build
 # You'll probably want to remove this in production, it's here to make it easier to test things!
 #RUN rm -f prisma/dev.sqlite
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "docker-start"]
