@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
+model session {
   id                               String                            @id
   shop                             String
   state                            String
@@ -42,7 +42,7 @@ model shopify_tdc_configurationshopify {
   pKey       String
   ready      Boolean @default(true)
   apiVersion String  @default("unstable")
-  Session    Session @relation(fields: [sessionId], references: [id], onDelete: Cascade, map: "ConfigurationShopify_sessionId_fkey")
+  session    session @relation(fields: [sessionId], references: [id], onDelete: Cascade, map: "ConfigurationShopify_sessionId_fkey")
 
   @@index([sessionId], map: "ConfigurationShopify_sessionId_idx")
 }
