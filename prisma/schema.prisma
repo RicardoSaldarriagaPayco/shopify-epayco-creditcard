@@ -29,9 +29,12 @@ model Configuration {
   session     Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId   String  @unique
   shop        String
-  accountName String
   ready       Boolean @default(true)
   apiVersion  String  @default("unstable")
+  pCustId    String
+  pKey       String
+  privateKey String
+  publicKey  String
 
   @@index([sessionId])
 }
@@ -65,6 +68,7 @@ model RefundSession {
   currency   String
   proposedAt DateTime
   status     String?
+  @@index([paymentId], map: "RefundSession_paymentId_fkey")
 }
 
 model CaptureSession {
@@ -76,6 +80,7 @@ model CaptureSession {
   currency   String
   proposedAt DateTime
   status     String?
+  @@index([paymentId], map: "CaptureSession_paymentId_fkey")
 }
 
 model VoidSession {
