@@ -19,12 +19,12 @@ model Session {
   expires       DateTime?
   accessToken   String
   userId        BigInt?
-  Configuration Configuration?
+  shopify_tdc_configurationshopify shopify_tdc_configurationshopify?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model Configuration {
+model shopify_tdc_configurationshopify {
   id          Int     @id @default(autoincrement())
   session     Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId   String  @unique
@@ -35,11 +35,12 @@ model Configuration {
   pKey       String
   privateKey String
   publicKey  String
+  lenguage   String 
 
   @@index([sessionId])
 }
 
-model PaymentSession {
+model shopify_tdc_paymentsession {
   id            String          @id
   gid           String
   group         String
@@ -50,43 +51,43 @@ model PaymentSession {
   shop          String
   paymentMethod String
   customer      String
-  refunds       RefundSession[]
-  captures      CaptureSession[]
-  void          VoidSession?
+  refunds       shopify_tdc_refundsession[]
+  captures      shopify_tdc_capturesession[]
+  void          shopify_tdc_voidsession?
   proposedAt    DateTime
   status        String?
   clientDetails String?
   threeDSecureAuthentication String?
 }
 
-model RefundSession {
+model shopify_tdc_refundsession {
   id         String         @id
   gid        String
-  payment    PaymentSession @relation(fields: [paymentId], references: [id])
+  payment    shopify_tdc_paymentsession @relation(fields: [paymentId], references: [id])
   paymentId  String
   amount     Decimal
   currency   String
   proposedAt DateTime
   status     String?
-  @@index([paymentId], map: "RefundSession_paymentId_fkey")
+  @@index([paymentId], map: "shopify_tdc_refundsession_paymentId_fkey")
 }
 
-model CaptureSession {
+model shopify_tdc_capturesession {
   id         String          @id
   gid        String
-  payment    PaymentSession  @relation(fields: [paymentId], references: [id])
+  payment    shopify_tdc_paymentsession  @relation(fields: [paymentId], references: [id])
   paymentId  String
   amount     Decimal
   currency   String
   proposedAt DateTime
   status     String?
-  @@index([paymentId], map: "CaptureSession_paymentId_fkey")
+  @@index([paymentId], map: "shopify_tdc_capturesession_paymentId_fkey")
 }
 
-model VoidSession {
+model shopify_tdc_voidsession {
   id         String          @id
   gid        String
-  payment    PaymentSession  @relation(fields: [paymentId], references: [id])
+  payment    shopify_tdc_paymentsession  @relation(fields: [paymentId], references: [id])
   paymentId  String          @unique
   proposedAt DateTime
   status     String?

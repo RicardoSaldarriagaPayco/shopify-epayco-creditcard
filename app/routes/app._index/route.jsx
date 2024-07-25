@@ -21,6 +21,7 @@ import {
   Spinner,
   FooterHelp,
   Link,
+  Label,
 } from "@shopify/polaris";
 
 import { authenticate } from "~/shopify.server";
@@ -51,6 +52,7 @@ export const action = async ({ request }) => {
     publicKey: formData.get("publicKey"),
     privateKey: formData.get("privateKey"),
     pKey: formData.get("pKey"),
+    lenguage: formData.get("lenguage"),
     ready: true,
     apiVersion: '2024-07',
   };
@@ -75,7 +77,7 @@ export default function Index() {
   const [privateKey, setPrivateKey] = useState(config ? config.privateKey : '');
   const [pKey, setPKey] = useState(config ? config.pKey : '');
   const [ready, setReady] = useState(config ? config.ready : false);
-  const [apiVersion, setApiVersion] = useState(config ? config.apiVersion : 'unstable');
+  const [lenguage, setLenguage] = useState(config ? config.lenguage : 'unstable');
   const [showBanner, setShowBanner] = useState(action ? action.raiseBanner : false);
   const [errors, setErrors] = useState([]);
 
@@ -115,6 +117,11 @@ export default function Index() {
         onDismiss={() => { setShowBanner(false) }}
       />)
     );
+
+    const lenguageOptiosn = [
+      {value: 'es', label:"Español"},
+      {value: 'en', label:"Ingles"}
+    ];
 
 
   if (isLoading) {
@@ -187,6 +194,13 @@ export default function Index() {
                           onChange={(change) => setPKey(change)}
                           value={pKey}
                           autoComplete="off"
+                        />
+                        <Select
+                          label="LENGUAGE"
+                          name="lenguage"
+                          onChange={(change) => setLenguage(change)}
+                          options={lenguageOptiosn}
+                          value={lenguage}
                         />
                         <Button submit>Guardar</Button>
                       </FormLayout>

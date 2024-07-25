@@ -2,7 +2,7 @@ docker build -t shopify-epayco-creditcard .
 docker run -it -p 3000:3000 shopify-epayco-creditcard
 npx prisma db pull
 1.Modelar tu Base de Datos: Usar prisma db pull para generar los modelos Prisma desde tu base de datos MySQL.
-npx prisma db pull
+npx prisma db push
 
 2.Generar Prisma Client: Ejecutar npx prisma generate para generar el cliente Prisma.
 npx prisma generate

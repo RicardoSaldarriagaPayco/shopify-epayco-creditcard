@@ -39,8 +39,7 @@ const createParams = ({id, gid, group, amount, currency, test, kind, customer, p
     proposedAt: proposed_at,
     cancelUrl: cancel_url,
     shop: shopDomain,
-    clientDetails: client_details,
-    merchantLocale: merchant_locale,
+    clientDetails: client_details
   }
 )
 
@@ -51,7 +50,7 @@ const processPayment = async (paymentSession,creditCard) => {
   const publicKey = config?.publicKey;
   const privateKey = config?.privateKey;
   const test = paymentSession.test;
-  const lang = paymentSession.merchantLocale.substr(0, 2).toUpperCase();
+  const lang = config?.lenguage;
   const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
   const epayco = new PaymentsAppsEpayco({publicKey: publicKey,privateKey: privateKey, lang: lang, test: test});
   const {token} = await epayco.sessionToken();
