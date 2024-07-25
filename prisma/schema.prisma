@@ -49,8 +49,8 @@ model shopify_tdc_paymentsession {
   currency      String
   kind          String
   shop          String
-  paymentMethod String?          @db.Text          
-  customer      String?          @db.Text
+  paymentMethod String                    
+  customer      String          
   refunds       shopify_tdc_refundsession[]
   captures      shopify_tdc_capturesession[]
   void          shopify_tdc_voidsession?
