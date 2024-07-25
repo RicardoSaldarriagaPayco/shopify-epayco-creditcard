@@ -23,7 +23,7 @@ export const action = async ({ request }) => {
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
   //return await processPayment(paymentSession,creditCard) 
-  setTimeout((async () => { processPayment(paymentSession) }), 0);
+  setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
   // Return empty response, 201
   return json({}, { status: 201 });
 }
