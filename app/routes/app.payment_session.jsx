@@ -69,10 +69,6 @@ const processPayment = async (paymentSession,creditCard) => {
     //return await json({}, { status: 404 });
   } else if (estado === "Aceptada") {
     await client.resolveSession(paymentSession);
-    //return await json({}, { status: 201 });
-  } else {
-    await client.pendSession(paymentSession);
-    //return await json({}, { status: 201 });
   }
 }
 
