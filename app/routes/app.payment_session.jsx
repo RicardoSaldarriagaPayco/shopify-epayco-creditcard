@@ -13,7 +13,7 @@ export const action = async ({ request }) => {
   const requestBody = await request.json();
 
   const shopDomain = request.headers.get("shopify-shop-domain") ?? request.headers.get("Shopify-shop-domain");
-
+  console.log(`[requestBody]: ${JSON.stringify(requestBody)}`);
   const sessionPayload = createParams(requestBody, shopDomain);
   const paymentSession = await createPaymentSession(sessionPayload);
 
