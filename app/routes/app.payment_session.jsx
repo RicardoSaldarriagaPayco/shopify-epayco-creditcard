@@ -23,6 +23,9 @@ export const action = async ({ request }) => {
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
   return await processPayment(paymentSession,creditCard) 
+  /*setTimeout((async () => { processPayment(paymentSession) }), 0);
+  // Return empty response, 201
+  return json({}, { status: 201 });*/
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
@@ -56,19 +59,20 @@ const processPayment = async (paymentSession,creditCard) => {
   const {token} = await epayco.sessionToken();
   epayco.accessToken= `Bearer ${token}`;
   const {success, data} = await epayco.charge(paymentSession,creditCard);
+  console.log(`[epayco response]: ${JSON.stringify(data)}`);
   if(!success){
       return json({}, { status: 404 });
   }
   const {estado} = data.transaction.data;
   if (estado === "Rechazada") {
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
-    return json({}, { status: 404 });
+    return await json({}, { status: 404 });
   } else if (estado === "Aceptada") {
     await client.resolveSession(paymentSession);
-    return json({}, { status: 201 });
+    return await json({}, { status: 201 });
   } else {
     //await client.pendSession(paymentSession);
-    return json({}, { status: 201 });
+    return await json({}, { status: 201 });
   }
 }
 
