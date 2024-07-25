@@ -50,13 +50,13 @@ model shopify_tdc_paymentsession {
   kind          String
   shop          String
   paymentMethod String
-  customer      String          @db.Text    
+  customer      String          @db.Text
   refunds       shopify_tdc_refundsession[]
   captures      shopify_tdc_capturesession[]
   void          shopify_tdc_voidsession?
   proposedAt    DateTime
   status        String?
-  clientDetails String?         @db.Text
+  clientDetails String?
   threeDSecureAuthentication String?
 }
 
