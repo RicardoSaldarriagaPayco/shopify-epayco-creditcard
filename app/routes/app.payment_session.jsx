@@ -67,7 +67,7 @@ const processPayment = async (paymentSession,creditCard) => {
     await client.resolveSession(paymentSession);
     return json({}, { status: 201 });
   } else {
-    await client.pendSession(paymentSession);
+    //await client.pendSession(paymentSession);
     return json({}, { status: 201 });
   }
 }

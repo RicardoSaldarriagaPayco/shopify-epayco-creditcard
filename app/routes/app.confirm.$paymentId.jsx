@@ -59,13 +59,8 @@ import {
     if (status === "Rechazada") {
       await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
       return json({}, { status: 404 });
-    } else if (status === "Aceptada") {
-      //await client.resolveSession(paymentSession);
-      //return json({}, { status: 201 });
     } else {
-      //await client.pendSession(paymentSession);
-      //return json({}, { status: 201 });
-      json({}, { status: 201 })
+      return json({}, { status: 201 });
     }
     
   }
