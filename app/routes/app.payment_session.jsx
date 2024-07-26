@@ -63,11 +63,13 @@ const processPayment = async (paymentSession,creditCard) => {
   if(!success){
       return json({}, { status: 404 });
   }
-  const {estado} = data.transaction.data;
-  if (estado === "Rechazada") {
+  const {status} = data.transaction.data;
+  const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
+
+  if (isReject) {
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
     //return await json({}, { status: 404 });
-  } else if (estado === "Aceptada") {
+  } else if (status === "Aceptada") {
     await client.resolveSession(paymentSession);
   }
 }

@@ -29,6 +29,7 @@ export default class PaymentsAppsClient {
     this.pendingMutation = "";
     this.redirectMutation = "";
     this.confirmMutation = "";
+    this.ordernoteupdate = "";
     this.dependencyInjector(type);
 
     const tomorrow = new Date();
@@ -125,6 +126,28 @@ export default class PaymentsAppsClient {
     return responseData;
   }
 
+  async orderNoteUpdate({ id, gid }, data) {
+    let {x_amount,x_response, x_ref_payco } = data;
+    const note = 
+    ` ref_payco ${x_ref_payco}\n
+      monto ${x_amount}\n
+      estado ${x_response}
+    `;
+
+    const payload = {
+      input: {
+        id: gid,
+        note: note
+      }
+    }
+    const response = await this.#perform(schema[this.ordernoteupdate],  payload);
+    const responseData = response[this.ordernoteupdate];
+
+    if (responseData?.userErrors?.length === 0) await this.update?.(id, RESOLVE);
+
+    return responseData;
+  }
+
   /**
    * Client perform function. Calls Shopify Payments Apps API.
    * @param {*} query the query to run
@@ -172,6 +195,7 @@ export default class PaymentsAppsClient {
         this.pendingMutation = "paymentSessionPending"
         this.redirectMutation = "paymentSessionRedirect"
         this.confirmMutation = "paymentSessionConfirm"
+        this.ordernoteupdate = "orderUpdate"
         this.update = updatePaymentSessionStatus
         break;
       case REFUND:

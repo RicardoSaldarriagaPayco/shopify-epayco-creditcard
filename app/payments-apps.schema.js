@@ -288,6 +288,21 @@ const voidSessionReject = `
   }
 `;
 
+const orderUpdate = `
+  mutation orderUpdate($input: OrderInput!) {
+  orderUpdate(input: $input) {
+    order {
+      id
+      note
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+`;
+
 export default {
   paymentsAppConfigure,
   paymentSessionResolve,
@@ -300,5 +315,6 @@ export default {
   voidSessionReject,
   paymentSessionPending,
   paymentSessionRedirect,
-  paymentSessionConfirm
+  paymentSessionConfirm,
+  orderUpdate
 };

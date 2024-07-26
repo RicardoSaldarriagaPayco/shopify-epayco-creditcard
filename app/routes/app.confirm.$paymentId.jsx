@@ -50,19 +50,20 @@ import {
       authenticationPayload['partnerError'] = "PROCESSING_ERROR";
     }
   
-    const newPaymentSession = await updatePaymentSessionAuthData(paymentId, authenticationPayload);
+    //const newPaymentSession = await updatePaymentSessionAuthData(paymentId, authenticationPayload);
     /*const response = await client.confirmSession(newPaymentSession);
     const userErrors = response.userErrors;
     if (userErrors?.length > 0) return json({ errors: userErrors });
   
     return redirect(response.paymentSession.nextAction.context.redirectUrl);*/
-    if (status === "Rechazada") {
+    if (isReject) {
       await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
     } 
     else if (status === "Aceptada") {
       await client.resolveSession(paymentSession);
       //return await json({}, { status: 201 });
     }
+      //await client.orderNoteUpdate(paymentSession, data);
     return json({}, { status: 201 });
   }
   
