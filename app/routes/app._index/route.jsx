@@ -56,6 +56,19 @@ export const action = async ({ request }) => {
     ready: true,
     apiVersion: '2024-07',
   };
+  const errors = {};
+
+  if (config.pCustId.length < 1 ||
+      config.publicKey.length < 1 ||
+      config.privateKey.length < 1 ||
+      config.pKey.length < 1
+  ) {
+    errors.password =
+      "todos los campos deben se estar configurados!";
+  }
+
+  if (Object.keys(errors).length > 0) return json({ errors });
+
   const configuration = await getOrCreateConfiguration(session.id, config);
 
   const client = new PaymentsAppsClient(session.shop, session.accessToken);
