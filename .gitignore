@@ -12,3 +12,5 @@ database.sqlite
 
 package-lock.json
 yarn.lock
+
+.shopify

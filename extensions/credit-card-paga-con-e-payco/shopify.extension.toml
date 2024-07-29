@@ -1,16 +1,21 @@
-api_version = "2024-07"
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2024-04"
 
 [[extensions]]
-name = "credit-card"
+name = "Credit card - Paga con ePayco"
+handle = "credit-card-paga-con-epayco"
 type = "payments_extension"
-handle = "credit-card"
+
+
+merchant_label = "Credit card - Paga con ePayco"
 payment_session_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/app/payment_session"
 refund_session_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/app/refund_session"
 capture_session_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/app/capture_session"
 void_session_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/app/void_session"
 confirmation_callback_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/app/confirm_session"
-multiple_capture = false
-merchant_label = "ePayco Credit Card"
+# List of ISO 3166 (alpha-2) country codes your app is available for installation by merchants. Learn more:
+# https://www.iso.org/iso-3166-country-codes.html
 supported_countries = [
   "AR",
   "BO",
@@ -29,18 +34,19 @@ supported_countries = [
   "UY",
   "VE"
 ]
+# List payment method names that your payment extension will support. Learn more:
+# https://github.com/activemerchant/payment_icons/blob/master/db/payment_icons.yml
 supported_payment_methods = [
   "visa",
   "master",
   "american_express",
   "diners_club" 
 ]
-test_mode_available = true
 supports_3ds = false
-supports_deferred_payments = false
 supports_installments = false
+supports_deferred_payments = false
+test_mode_available = true
 encryption_certificate_fingerprint = "deef4702f2066155cae0e5a9fc5a0218c8b7b9dd65a30f0993e7192cb06db748"
 
-
-  [[extensions.targeting]]
-  target = "payments.credit-card.render"
+[[extensions.targeting]]
+target = "payments.credit-card.render"

@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "c701d59ba2163f792fa2c08a31346f99"
+client_id = "021582f85be8d7ea1c4303e69a50fc94"
 name = "epayco credit card payment"
 handle = "epayco-credit-card-payment"
-application_url = "https://td-coast-lauren-pursue.trycloudflare.com"
+application_url = "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com"
 embedded = false
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_orders,write_payment_gateways,write_payment_sessions"
 
 [auth]
 redirect_urls = [
-  "https://td-coast-lauren-pursue.trycloudflare.com/auth/callback",
-  "https://td-coast-lauren-pursue.trycloudflare.com/auth/shopify/callback",
-  "https://td-coast-lauren-pursue.trycloudflare.com/api/auth/callback"
+  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/auth/callback",
+  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/auth/shopify/callback",
+  "https://shopify-epayco-creditcard-277476b7083b.herokuapp.com/api/auth/callback"
 ]
 
 [webhooks]
