@@ -26,4 +26,4 @@ redirect_urls = [
 api_version = "2024-07"
 
 [pos]
-embedded = false
+embedded = true
