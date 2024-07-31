@@ -59,6 +59,7 @@ export default class PaymentsAppsEpayco {
           const test = paymentSession.test;
           const ip = await this.getIp();
           const urlConfirmation = this.comfirm_url(paymentSession.id);
+          const methodConfirmation	= 'POST';
           const payload = { 
             email,
             name,
@@ -79,7 +80,8 @@ export default class PaymentsAppsEpayco {
             cardCvc,
             dues: "1",
             testMode: test,
-            urlConfirmation
+            urlConfirmation,
+            methodConfirmation
         };
         const response = await this.#perform(payload, '/payment/process');
         return response;
