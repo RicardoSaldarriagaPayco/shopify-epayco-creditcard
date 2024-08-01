@@ -81,7 +81,9 @@ export default class PaymentsAppsEpayco {
             dues: "1",
             testMode: test,
             urlConfirmation,
-            methodConfirmation
+            methodConfirmation,
+            description:"Compra en Shopify",
+            ip
         };
         const response = await this.#perform(payload, '/payment/process');
         return response;
