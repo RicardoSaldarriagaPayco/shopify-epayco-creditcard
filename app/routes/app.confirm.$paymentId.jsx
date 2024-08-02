@@ -58,6 +58,7 @@ import {
     return redirect(response.paymentSession.nextAction.context.redirectUrl);*/
     if (isReject) {
       await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+      return json({}, { status: 404 });
     } 
     else if (status === "Aceptada") {
       await client.resolveSession(paymentSession);
