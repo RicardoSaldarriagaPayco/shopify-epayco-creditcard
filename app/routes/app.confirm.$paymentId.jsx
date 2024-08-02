@@ -44,28 +44,18 @@ import {
   
     const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
     const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
-  
-    const authenticationPayload = {};
-    if (isReject) {
-      authenticationPayload['partnerError'] = "PROCESSING_ERROR";
-    }
-  
-    //const newPaymentSession = await updatePaymentSessionAuthData(paymentId, authenticationPayload);
-    /*const response = await client.confirmSession(newPaymentSession);
-    const userErrors = response.userErrors;
-    if (userErrors?.length > 0) return json({ errors: userErrors });
-  
-    return redirect(response.paymentSession.nextAction.context.redirectUrl);*/
+
+    setTimeout((async () => { processPayment(paymentSession,client,isReject,status) }), 5000);
+    
+  }
+
+  const processPayment = async (paymentSession,client,isReject,status) => {
     if (isReject) {
       await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
-      return json({}, { status: 404 });
     } 
     else if (status === "Aceptada") {
       await client.resolveSession(paymentSession);
-      //return await json({}, { status: 201 });
     }
-      //await client.orderNoteUpdate(paymentSession, data);
-    return json({}, { status: 201 });
   }
   
  
