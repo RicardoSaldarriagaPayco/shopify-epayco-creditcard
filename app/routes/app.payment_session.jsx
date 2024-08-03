@@ -23,10 +23,8 @@ export const action = async ({ request }) => {
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
   //setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
-  processPayment(paymentSession,creditCard)
-  setTimeout(function(){
-    return json({}, { status: 201 });
-}, 2000);
+  return processPayment(paymentSession,creditCard)
+  /*return json({}, { status: 201 });*/
   
 }
 
@@ -70,9 +68,10 @@ const processPayment = async (paymentSession,creditCard) => {
 
   if (isReject) {
     return json({}, { status: 404 });
-    await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
-  } else if (status === "Aceptada") {
-    await client.resolveSession(paymentSession);
+    //await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+  } else {
+    return json({}, { status: 201 });
+    //await client.resolveSession(paymentSession);
   }
 }
 
