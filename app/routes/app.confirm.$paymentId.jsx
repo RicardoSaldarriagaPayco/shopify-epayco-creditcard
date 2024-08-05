@@ -46,17 +46,20 @@ import {
     const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
 
     //setTimeout((async () => {await processPayment(paymentSession,client,isReject,status) }), 0);
-    await processPayment(paymentSession,client,isReject,status);
-    return json({}, { status: 200 });
+    return processPayment(paymentSession,client,isReject,status);
+     
   }
 
   const processPayment = async (paymentSession,client,isReject,status) => {
     if (isReject) {
       await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+      return json({}, { status: 404 });
+       
     } 
     else if (status === "Aceptada") {
       await client.resolveSession(paymentSession);
     }
+    return json({}, { status: 200 });
   }
   
  
