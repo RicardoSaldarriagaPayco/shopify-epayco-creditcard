@@ -59,14 +59,14 @@ const processPayment = async (paymentSession,creditCard) => {
   const {token} = await epayco.sessionToken();
   epayco.accessToken= `Bearer ${token}`;
   const {success, data} = await epayco.charge(paymentSession,creditCard);
-  /*if(!success){
+  if(!success){
       let {codError} = data.error.errors;
       console.log(`[epayco codError]: ${codError}`);
       if(codError==="E035"){
         return json({}, { status: 201 });
       }
       return json({}, { status: 404 });
-  }*/
+  }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
 
