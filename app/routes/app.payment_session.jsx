@@ -22,9 +22,9 @@ export const action = async ({ request }) => {
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
-  //setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
-  return processPayment(paymentSession,creditCard)
-  /*return json({}, { status: 201 });*/
+  setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
+  return json({}, { status: 201 });
+  //return processPayment(paymentSession,creditCard)
   
 }
 
@@ -71,11 +71,13 @@ const processPayment = async (paymentSession,creditCard) => {
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
 
   if (isReject) {
-    return json({}, { status: 404 });
-    //await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+    //return json({}, { status: 404 });
+    await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
   } else {
-    return json({}, { status: 201 });
-    //await client.resolveSession(paymentSession);
+    if(status === "Aceptada"){
+      await client.resolveSession(paymentSession);
+    }
+    //return json({}, { status: 201 });
   }
 }
 
