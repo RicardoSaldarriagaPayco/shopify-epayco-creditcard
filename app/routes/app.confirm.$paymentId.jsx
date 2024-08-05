@@ -45,7 +45,7 @@ import {
     const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
     const client = new PaymentsAppsClient(session.shop, session.accessToken, PAYMENT);
 
-    setTimeout((async () => { processPayment(paymentSession,client,isReject,status) }), 0);
+    setTimeout((async () => {await processPayment(paymentSession,client,isReject,status) }), 0);
     return json({}, { status: 200 });
   }
 

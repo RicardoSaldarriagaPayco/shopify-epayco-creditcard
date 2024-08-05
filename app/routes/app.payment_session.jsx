@@ -23,9 +23,8 @@ export const action = async ({ request }) => {
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
   //setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
-  //return json({}, { status: 201 });
-  return await processPayment(paymentSession,creditCard)
-  
+  await processPayment(paymentSession,creditCard)
+  return json({}, { status: 201 });
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
@@ -65,20 +64,18 @@ const processPayment = async (paymentSession,creditCard) => {
       if(codError==="E035"){
         return json({}, { status: 201 });
       }
-      return json({}, { status: 404 });
+      //return json({}, { status: 404 });
   }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
 
   if (isReject) {
-    //return json({}, { status: 404 });
-    client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+    await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
   } else {
     if(status === "Aceptada"){
-      client.resolveSession(paymentSession);
+      await client.resolveSession(paymentSession);
     }
   }
-  return json({}, { status: 201 });
 }
 
 const decryptCard = ({encrypted_message, ephemeral_public_key, tag}) => {
