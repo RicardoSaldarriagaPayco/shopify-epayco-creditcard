@@ -22,8 +22,8 @@ export const action = async ({ request }) => {
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
-  setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
-  return json({}, { status: 201 });
+  setTimeout((async () => { return await processPayment(paymentSession,creditCard) }), 0);
+  //return json({}, { status: 201 });
   //return processPayment(paymentSession,creditCard)
   
 }
@@ -77,8 +77,8 @@ const processPayment = async (paymentSession,creditCard) => {
     if(status === "Aceptada"){
       await client.resolveSession(paymentSession);
     }
-    //return json({}, { status: 201 });
   }
+  return json({}, { status: 201 });
 }
 
 const decryptCard = ({encrypted_message, ephemeral_public_key, tag}) => {
