@@ -71,6 +71,7 @@ const processPayment = async (paymentSession,creditCard) => {
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
 
   if (isReject) {
+    return json({}, { status: 404 });
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
   } else {
     if(status === "Aceptada"){
