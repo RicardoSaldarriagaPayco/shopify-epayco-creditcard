@@ -60,12 +60,12 @@ const processPayment = async (paymentSession,creditCard) => {
   const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
       let {codError} = data.error.errors[0];
-      console.log(`[epayco codError]: ${codError}`);
-      return json({}, { status: 200 });
+      //console.log(`[epayco codError]: ${codError}`);
+      //return json({}, { status: 200 });
       if(codError==="E035"){
         return json({}, { status: 200 });
       }
-      //return json({}, { status: 404 });
+      return json({}, { status: 404 });
   }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
