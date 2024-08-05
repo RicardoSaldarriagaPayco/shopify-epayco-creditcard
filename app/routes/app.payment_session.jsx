@@ -60,7 +60,7 @@ const processPayment = async (paymentSession,creditCard) => {
   epayco.accessToken= `Bearer ${token}`;
   const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
-      let {codError} = data.error.errors;
+      let {codError} = data.error.errors[0];
       console.log(`[epayco codError]: ${codError}`);
       if(codError==="E035"){
         return json({}, { status: 201 });
