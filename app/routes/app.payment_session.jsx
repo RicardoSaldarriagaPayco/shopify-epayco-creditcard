@@ -22,8 +22,8 @@ export const action = async ({ request }) => {
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
   
-  //setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
-  await processPayment(paymentSession,creditCard)
+  setTimeout((async () => { processPayment(paymentSession,creditCard) }), 0);
+  //await processPayment(paymentSession,creditCard)
   return json({}, { status: 201 });
 }
 
@@ -61,8 +61,9 @@ const processPayment = async (paymentSession,creditCard) => {
   if(!success){
       let {codError} = data.error.errors[0];
       console.log(`[epayco codError]: ${codError}`);
+      return json({}, { status: 200 });
       if(codError==="E035"){
-        return json({}, { status: 201 });
+        return json({}, { status: 200 });
       }
       //return json({}, { status: 404 });
   }
