@@ -65,8 +65,10 @@ const processPayment = async (paymentSession,creditCard) => {
   const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
       let {codError} = data.error.errors[0];
+      await client.pendSession(paymentSession);
+      return {status:200}
       if(codError==="E035"){
-        return {status:200}
+        
       }
   }
   const {status} = data.transaction.data;
@@ -78,8 +80,10 @@ const processPayment = async (paymentSession,creditCard) => {
   } else {
     if(status === "Aceptada"){
       await client.resolveSession(paymentSession);
-      return {status:201}
+    }else{
+      await client.pendSession(paymentSession);
     }
+    return {status:201}
   }
 }
 
