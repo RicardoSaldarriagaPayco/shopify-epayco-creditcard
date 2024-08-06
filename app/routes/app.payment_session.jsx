@@ -64,12 +64,11 @@ const processPayment = async (paymentSession,creditCard) => {
   epayco.accessToken= `Bearer ${token}`;
   const {success, data} = await epayco.charge(paymentSession,creditCard);
   if(!success){
-      let {codError} = data.error.errors[0];
-      await client.pendSession(paymentSession);
+      //let {codError} = data.error.errors[0];
       return {status:200}
-      if(codError==="E035"){
+      /*if(codError==="E035"){
         
-      }
+      }*/
   }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
@@ -80,8 +79,6 @@ const processPayment = async (paymentSession,creditCard) => {
   } else {
     if(status === "Aceptada"){
       await client.resolveSession(paymentSession);
-    }else{
-      await client.pendSession(paymentSession);
     }
     return {status:201}
   }
