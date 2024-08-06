@@ -21,14 +21,14 @@ export const action = async ({ request }) => {
 
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
-  const proces =await processPayment(paymentSession,creditCard)
-  return proces;
+
   setTimeout((async () => { 
-   // await processPayment(paymentSession,creditCard) 
+     const status = await processPayment(paymentSession,creditCard) ;
+     return json({}, status);
   }), 0);
 
   //return processPayment(paymentSession,creditCard)
-  //return json({}, { status: 201 });
+  
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
@@ -65,21 +65,20 @@ const processPayment = async (paymentSession,creditCard) => {
   if(!success){
       let {codError} = data.error.errors[0];
       if(codError==="E035"){
-        return json({}, { status: 200 });
+        return {status:200}
       }
-      return json({}, { status: 404 });
   }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
 
   if (isReject) {
-     client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
-    return json({}, { status: 404 });
+    await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
+    return {status:400}
   } else {
     if(status === "Aceptada"){
-       client.resolveSession(paymentSession);
+      await client.resolveSession(paymentSession);
+      return {status:201}
     }
-    return json({}, { status: 200 });
   }
 }
 
