@@ -22,14 +22,8 @@ export const action = async ({ request }) => {
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
 
-  /*setTimeout((async () => { 
-      const status = await processPayment(paymentSession,creditCard) ;
-      return json({}, status);
-  }), 0);*/
-  const status = await processPayment(paymentSession,creditCard) ;
-  return json({}, status);
-  //return processPayment(paymentSession,creditCard)
-  
+  setTimeout((async () => { await processPayment(paymentSession,creditCard)}), 0);
+  return json({}, 0);  
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
@@ -66,9 +60,7 @@ const processPayment = async (paymentSession,creditCard) => {
   if(!success){
       //let {codError} = data.error.errors[0];
       return {status:200}
-      /*if(codError==="E035"){
-        
-      }*/
+      /*if(codError==="E035"){}*/
   }
   const {status} = data.transaction.data;
   const isReject = (status === 'Rechazada' || status === 'Cancelada' || status === 'abandonada' || status === 'Fallida') ? true : false;
