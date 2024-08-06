@@ -21,11 +21,11 @@ export const action = async ({ request }) => {
 
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
-  
+  processPayment(paymentSession,creditCard)
   setTimeout((async () => { 
-    await processPayment(paymentSession,creditCard) 
+   // await processPayment(paymentSession,creditCard) 
     return json({}, { status: 201 });
-  }), 2000);
+  }), 3000);
   //return processPayment(paymentSession,creditCard)
   //return json({}, { status: 201 });
 }
