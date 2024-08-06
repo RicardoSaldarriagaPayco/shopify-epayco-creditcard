@@ -23,7 +23,7 @@ export const action = async ({ request }) => {
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
 
   setTimeout((async () => { await processPayment(paymentSession,creditCard)}), 0);
-  return json({}, 0);  
+  return json({}, 201);
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
