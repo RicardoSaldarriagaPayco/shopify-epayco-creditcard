@@ -26,6 +26,7 @@ export const action = async ({ request }) => {
    // await processPayment(paymentSession,creditCard) 
     return json({}, { status: 201 });
   }), 3000);
+  
   //return processPayment(paymentSession,creditCard)
   //return json({}, { status: 201 });
 }
