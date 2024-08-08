@@ -70,7 +70,7 @@ const processPayment = async (paymentSession,creditCard) => {
     await client.rejectSession(paymentSession, { reasonCode: getRejectReason("PROCESSING_ERROR") });
     return {status:400}
   } else {
-    if(status === "Aceptada"){
+    if(estado === "Aceptada"){
       await client.resolveSession(paymentSession);
     }
     return {status:201}
