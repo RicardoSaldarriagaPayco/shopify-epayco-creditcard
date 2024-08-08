@@ -6,6 +6,7 @@ import { createCaptureSession } from "~/payments.repository";
  * Saves and starts a capture session.
  */
 export const action = async ({ request }) => {
+  console.log(`[capture_session]`);
   const requestBody = await request.json();
 
   const captureSessionHash = createParams(requestBody);

@@ -6,6 +6,7 @@ import { createRefundSession } from "~/payments.repository";
  * Saves and starts a refund session.
  */
 export const action = async ({ request }) => {
+  console.log(`[refund_session]`);
   const requestBody = await request.json();
 
   const refundSessionHash = createParams(requestBody);

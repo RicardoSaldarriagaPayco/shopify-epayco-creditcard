@@ -10,6 +10,7 @@ import PaymentsAppsEpayco from "~/payments-apps.epayco";
  * Returns an empty response and process the payment asyncronously
  */
 export const action = async ({ request }) => {
+  console.log(`[payment_session]`);
   const requestBody = await request.json();
 
   const shopDomain = request.headers.get("shopify-shop-domain") ?? request.headers.get("Shopify-shop-domain");

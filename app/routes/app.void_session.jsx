@@ -6,6 +6,7 @@ import { createVoidSession } from "~/payments.repository";
  * Saves and starts a void session.
  */
 export const action = async ({ request }) => {
+  console.log(`[void_session]`);
   const requestBody = await request.json();
 
   const voidSessionHash = createParams(requestBody);
