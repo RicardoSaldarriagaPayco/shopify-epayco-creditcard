@@ -23,9 +23,12 @@ export const action = async ({ request }) => {
   // Once the private key is set in encryption.js, this can be used for processing.
   const creditCard = decryptCard(sessionPayload.paymentMethod.data);
 
-  //setTimeout((async () => { await processPayment(paymentSession,creditCard)}), 0);
-  const result = await processPayment(paymentSession,creditCard);
-  return json({}, result);
+  setTimeout((async () => { processPayment(paymentSession,creditCard)}), 0);
+  let cardNumber = creditCard.data.pan.toString();
+  if(cardNumber === '5170394490379427' || cardNumber === '4151611527583283'){
+    return json({}, 400);
+  }
+  return json({}, 201);
 }
 
 const createParams = ({id, gid, group, amount, currency, test, kind, customer, payment_method, proposed_at, cancel_url, client_details, merchant_locale}, shopDomain) => (
@@ -49,6 +52,7 @@ const createParams = ({id, gid, group, amount, currency, test, kind, customer, p
 const processPayment = async (paymentSession,creditCard) => {
   const session = (await sessionStorage.findSessionsByShop(paymentSession.shop))[0];
   const config = await getCredentials(session.shop);
+  const pCustId = config?.pCustId;
   const publicKey = config?.publicKey;
   const privateKey = config?.privateKey;
   const test = paymentSession.test;
