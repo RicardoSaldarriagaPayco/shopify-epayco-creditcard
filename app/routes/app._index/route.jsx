@@ -31,6 +31,7 @@ import PaymentsAppsClient from "~/payments-apps.graphql";
  * Loads the app's configuration if it exists.
 */
 export const loader = async ({ request }) => {
+  console.log(`[app_init_payment_session]`);
   const { session } = await authenticate.admin(request);
   const apiKey = process.env.SHOPIFY_API_KEY;
 

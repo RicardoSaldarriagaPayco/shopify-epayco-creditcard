@@ -7,7 +7,7 @@ export const links = () => [{ rel: "stylesheet", href: indexStyles }];
 
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
-
+  console.log(`[init_payment_session]`);
   if (url.searchParams.get("shop")) {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
