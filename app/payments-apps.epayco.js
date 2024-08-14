@@ -83,7 +83,8 @@ export default class PaymentsAppsEpayco {
             urlConfirmation,
             methodConfirmation,
             description:"Compra en Shopify",
-            ip
+            ip,
+            extras_epayco:{extra5:"P53"}
         };
         const response = await this.#perform(payload, '/payment/process');
         return response;
