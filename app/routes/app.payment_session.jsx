@@ -26,7 +26,7 @@ export const action = async ({ request }) => {
   setTimeout((async () => { processPayment(paymentSession,creditCard)}), 0);
   let cardNumber = creditCard.data.pan.toString();
   if(cardNumber === '5170394490379427' || cardNumber === '4151611527583283'){
-    return json({}, 400);
+    return json({"message":"tarjeta restingida por el centro de validaciones"}, 400);
   }
   return json({}, 201);
 }

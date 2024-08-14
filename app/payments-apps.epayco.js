@@ -107,7 +107,7 @@ export default class PaymentsAppsEpayco {
             'Content-Type': 'application/json',
             'Authorization': this.accessToken
           }
-    
+        console.log(`[apify] Making request: "${JSON.stringify(query)}"`)
         const response = await fetch(this.BASE_URL_APIFY+`/${path}`, {
           method: 'POST',
           headers,
